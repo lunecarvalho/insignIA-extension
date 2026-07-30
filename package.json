@@ -1,0 +1,13 @@
+{
+  "name": "insignia-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "InsignIA Chrome Extension (TypeScript, Manifest V3)",
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "watch": "node ./scripts/dev.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.0"
+  }
+}

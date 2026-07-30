@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InsignIA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="popup-window">
+        <header class="app-header">
+          <div class="branding">
+            <div class="logo-mark" aria-hidden="true">
+              <img src="../icons/icon.png" alt="InsignIA" class="logo-img" />
+            </div>
+            <div class="brand-copy">
+              <h1>InsignIA</h1>
+              <p>Inteligência Aplicada a Interações</p>
+            </div>
+          </div>
+
+          <button class="icon-button" aria-label="Configurações">
+            <i data-lucide="settings"></i>
+          </button>
+        </header>
+
+        <main class="content">
+          <section class="status-card card-surface">
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              Atendimento Detectado
+            </div>
+
+            <div class="status-grid">
+              <div class="status-item">
+                <span class="label">Ticket</span>
+                <strong>#45893</strong>
+              </div>
+              <div class="status-item">
+                <span class="label">Analista</span>
+                <strong>Maria Souza</strong>
+              </div>
+              <div class="status-item">
+                <span class="label">Tempo</span>
+                <strong>18 minutos</strong>
+              </div>
+              <div class="status-item">
+                <span class="label">Mensagens</span>
+                <strong>27</strong>
+              </div>
+            </div>
+
+            <div class="status-footer">
+              <span class="label">Status</span>
+              <span class="status-badge">Em andamento</span>
+            </div>
+          </section>
+
+          <button class="primary-action" id="analyzeBtn" type="button">
+            <span class="button-icon" aria-hidden="true">
+              <i data-lucide="search"></i>
+            </span>
+            <span class="button-text">Analisar Conversa</span>
+          </button>
+
+          <section class="loading-state" id="loadingState" hidden>
+            <div class="loading-card card-surface">
+              <div class="loading-visual" aria-hidden="true">
+                <div class="orbital-ring"></div>
+                <div class="core-node"></div>
+              </div>
+              <p class="loading-title">A IA está analisando o atendimento...</p>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <p class="loading-caption">Extraindo contexto, sentimento e recomendações em tempo real.</p>
+            </div>
+          </section>
+
+          <section class="results" id="results" hidden>
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-prime">
+                    <i data-lucide="message-square-warning"></i>
+                  </div>
+                  <div>
+                    <h3>Motivo do Atendimento</h3>
+                    <p>Categoria • Subcategoria</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="metric-stack">
+                <div class="metric-item">
+                  <span class="metric-label">Categoria</span>
+                  <strong>Sistema</strong>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Subcategoria</span>
+                  <strong>Erro ao sincronizar pedidos</strong>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Confiança</span>
+                  <strong>97%</strong>
+                </div>
+              </div>
+            </article>
+
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-success">
+                    <i data-lucide="sparkles"></i>
+                  </div>
+                  <div>
+                    <h3>Análise de Sentimento</h3>
+                    <p>Evolução emocional do atendimento</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline">
+                <div class="timeline-step negative">
+                  <span>😠</span>
+                  <small>Negativo</small>
+                </div>
+                <div class="timeline-arrow">↓</div>
+                <div class="timeline-step neutral">
+                  <span>😐</span>
+                  <small>Neutro</small>
+                </div>
+                <div class="timeline-arrow">↓</div>
+                <div class="timeline-step positive">
+                  <span>😊</span>
+                  <small>Positivo</small>
+                </div>
+              </div>
+
+              <p class="card-note">A experiência do cliente melhorou durante o atendimento.</p>
+              <div class="progress-dots">
+                <span class="dot active"></span>
+                <span class="dot active"></span>
+                <span class="dot active"></span>
+              </div>
+            </article>
+
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-warning">
+                    <i data-lucide="shield-check"></i>
+                  </div>
+                  <div>
+                    <h3>Qualidade do Atendimento</h3>
+                    <p>Score e pontos de atenção</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quality-row">
+                <div class="score-ring" style="--score: 91">
+                  <span class="score-value">91/100</span>
+                </div>
+
+                <ul class="checklist">
+                  <li><span class="check-icon">✔</span> Saudou o cliente</li>
+                  <li><span class="check-icon">✔</span> Demonstrou empatia</li>
+                  <li><span class="check-icon">✔</span> Explicou claramente</li>
+                  <li><span class="check-icon">✔</span> Solucionou o problema</li>
+                  <li><span class="check-icon">✖</span> Confirmou satisfação</li>
+                </ul>
+              </div>
+
+              <p class="card-note">A IA observou que o atendimento ficou mais claro após a segunda resposta.</p>
+            </article>
+
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-secondary">
+                    <i data-lucide="bar-chart-3"></i>
+                  </div>
+                  <div>
+                    <h3>Radar de Tendências</h3>
+                    <p>Movimento por categoria</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="trend-layout">
+                <div class="trend-bars" aria-label="Gráfico de barras com tendência por categoria">
+                  <div class="trend-item"><span>Impressora</span><div class="bar"><i style="--height: 42%"></i></div></div>
+                  <div class="trend-item"><span>Financeiro</span><div class="bar"><i style="--height: 61%"></i></div></div>
+                  <div class="trend-item"><span>Login</span><div class="bar"><i style="--height: 74%"></i></div></div>
+                  <div class="trend-item"><span>Cancelamento</span><div class="bar"><i style="--height: 54%"></i></div></div>
+                  <div class="trend-item"><span>Cardápio</span><div class="bar"><i style="--height: 46%"></i></div></div>
+                  <div class="trend-item"><span>Sistema</span><div class="bar"><i style="--height: 88%"></i></div></div>
+                </div>
+
+                <div class="trend-highlight">
+                  <div class="trend-arrow">↑ +42%</div>
+                  <p>Chamados relacionados à categoria Sistema aumentaram nas últimas 24 horas.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-prime">
+                    <i data-lucide="brain-circuit"></i>
+                  </div>
+                  <div>
+                    <h3>Insights da IA</h3>
+                    <p>Sugestões de melhoria</p>
+                  </div>
+                </div>
+              </div>
+
+              <ul class="insight-list">
+                <li><span class="check-icon">✔</span> Criar artigo para erro de sincronização.</li>
+                <li><span class="check-icon">✔</span> Atualizar FAQ sobre login.</li>
+                <li><span class="check-icon">✔</span> Automatizar respostas para impressão.</li>
+                <li><span class="check-icon">✔</span> Revisar fluxo de cancelamento.</li>
+                <li><span class="check-icon">✔</span> Criar macro para dúvidas de cardápio.</li>
+              </ul>
+            </article>
+
+            <article class="result-card card-surface" data-card>
+              <div class="card-header">
+                <div class="card-title-group">
+                  <div class="icon-badge icon-badge-secondary">
+                    <i data-lucide="rocket"></i>
+                  </div>
+                  <div>
+                    <h3>Ações Rápidas</h3>
+                    <p>Próximos passos</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-grid">
+                <button class="action-btn" type="button">Salvar análise</button>
+                <button class="action-btn" type="button">Nova análise</button>
+                <button class="action-btn" type="button">Exportar PDF</button>
+                <button class="action-btn" type="button">Copiar insights</button>
+              </div>
+            </article>
+          </section>
+        </main>
+
+        <footer class="app-footer">
+          <span>v1.0</span>
+          <span>Powered by InsignIA</span>
+        </footer>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

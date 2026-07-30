@@ -1,0 +1,20 @@
+:root{
+  --primary: #5b5ceb;
+  --secondary: #00d2c7;
+  --bg: #f7f9fc;
+  --text: #1a1f36;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, Arial;margin:0;background:var(--bg);color:var(--text);width:360px}
+.popup-root{padding:14px;display:flex;flex-direction:column;gap:12px}
+.popup-header{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:transparent;border:1px solid rgba(26,31,54,0.08)}
+.logo-img{width:100%;height:100%;object-fit:contain;display:block}
+.title{font-weight:700}
+.subtitle{font-size:12px;color:#697386}
+.popup-body{display:flex;flex-direction:column;gap:8px}
+.primary{padding:12px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#7d82ff);color:white;border:none;font-weight:700}
+.status{font-size:12px;color:#697386}
+.summary{font-size:13px}
+.popup-footer{font-size:11px;color:#9aa2b2}
