@@ -9,7 +9,8 @@ async function buildAll() {
     bundle: true,
     outfile: 'dist/background.js',
     platform: 'browser',
-    target: ['es2020']
+    target: ['es2020'],
+    charset: 'utf8'
   });
 
   await build({
@@ -17,7 +18,8 @@ async function buildAll() {
     bundle: true,
     outfile: 'dist/content.js',
     platform: 'browser',
-    target: ['es2020']
+    target: ['es2020'],
+    charset: 'utf8'
   });
 
   await build({
@@ -25,7 +27,8 @@ async function buildAll() {
     bundle: true,
     outfile: 'dist/popup.js',
     platform: 'browser',
-    target: ['es2020']
+    target: ['es2020'],
+    charset: 'utf8'
   });
 }
 

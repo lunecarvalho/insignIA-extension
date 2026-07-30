@@ -26,7 +26,7 @@
       return;
     const btn = document.createElement("button");
     btn.id = "insignia-analyze-btn";
-    btn.innerText = "\u{1F50D} Analisar Conversa";
+    btn.innerText = "🔍 Analisar Conversa";
     Object.assign(btn.style, {
       position: "fixed",
       right: "18px",
@@ -42,7 +42,7 @@
     });
     btn.addEventListener("click", async () => {
       btn.disabled = true;
-      btn.innerText = "\u23F3 Extraindo...";
+      btn.innerText = "⏳ Extraindo...";
       try {
         const conv = extractConversation();
         chrome.runtime.sendMessage({ type: "analyze", conversation: conv }, (resp) => {
@@ -51,7 +51,7 @@
         console.error("InsignIA: erro ao extrair conversa", err);
       } finally {
         btn.disabled = false;
-        btn.innerText = "\u{1F50D} Analisar Conversa";
+        btn.innerText = "🔍 Analisar Conversa";
       }
     });
     document.body.appendChild(btn);
@@ -117,10 +117,10 @@
     header.style.justifyContent = "space-between";
     header.style.alignItems = "center";
     const title = document.createElement("strong");
-    title.innerText = "InsignIA \u2014 Resultados";
+    title.innerText = "InsignIA — Resultados";
     title.style.fontSize = "14px";
     const close = document.createElement("button");
-    close.innerText = "\u2715";
+    close.innerText = "✕";
     Object.assign(close.style, { background: "transparent", border: "none", cursor: "pointer" });
     close.addEventListener("click", () => panel?.remove());
     header.appendChild(title);
@@ -144,8 +144,8 @@
       errorCard.style.padding = "12px";
       errorCard.style.borderRadius = "12px";
       errorCard.style.border = "1px solid #ffe0e0";
-      errorCard.innerHTML = `<h4 style="margin:0 0 6px 0">Falha na an\xE1lise</h4>
-    <div style="color:#b42318">N\xE3o foi poss\xEDvel conectar \xE0 API. Verifique se o backend FastAPI est\xE1 rodando em http://127.0.0.1:8000.</div>`;
+      errorCard.innerHTML = `<h4 style="margin:0 0 6px 0">Falha na análise</h4>
+    <div style="color:#b42318">Não foi possível conectar à API. Verifique se o backend FastAPI está rodando em http://127.0.0.1:8000.</div>`;
       body.appendChild(errorCard);
       return;
     }
@@ -157,20 +157,20 @@
     reasonCard.innerHTML = `<h4 style="margin:0 0 6px 0">Motivo do Atendimento</h4>
   <div style="font-weight:700">${resultData.reason.category}</div>
   <div style="color:#697386;font-size:12px">${resultData.reason.subcategory}</div>
-  <div style="margin-top:8px;font-weight:800">Confian\xE7a: ${resultData.reason.confidence}%</div>`;
+  <div style="margin-top:8px;font-weight:800">Confiança: ${resultData.reason.confidence}%</div>`;
     body.appendChild(reasonCard);
     const sentCard = document.createElement("div");
     sentCard.style.padding = "10px";
     sentCard.style.borderRadius = "12px";
     sentCard.style.border = "1px solid var(--border, #eef2ff)";
-    sentCard.innerHTML = `<h4 style="margin:0 0 6px 0">An\xE1lise de Sentimento</h4>
+    sentCard.innerHTML = `<h4 style="margin:0 0 6px 0">Análise de Sentimento</h4>
   <div style="font-weight:700">${resultData.sentiment.label} (${resultData.sentiment.score})</div>`;
     body.appendChild(sentCard);
     const qCard = document.createElement("div");
     qCard.style.padding = "10px";
     qCard.style.borderRadius = "12px";
     qCard.style.border = "1px solid var(--border, #eef2ff)";
-    const checklistHtml = Object.entries(resultData.quality.checklist).map(([k, v]) => `<div>${v ? "\u2714" : "\u2716"} ${k}</div>`).join("");
+    const checklistHtml = Object.entries(resultData.quality.checklist).map(([k, v]) => `<div>${v ? "✔" : "✖"} ${k}</div>`).join("");
     qCard.innerHTML = `<h4 style="margin:0 0 6px 0">Qualidade do Atendimento</h4>
   <div style="font-weight:800">${resultData.quality.score}/100</div>
   <div style="margin-top:8px">${checklistHtml}</div>
@@ -189,7 +189,7 @@
       try {
         renderAnalysis(message.payload);
       } catch (err) {
-        console.error("InsignIA: erro ao renderizar an\xE1lise", err);
+        console.error("InsignIA: erro ao renderizar análise", err);
       }
     }
     return true;

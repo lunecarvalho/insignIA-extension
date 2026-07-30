@@ -9,7 +9,7 @@
       statusNode.innerText = text;
   }
   async function triggerAnalysisFromPopup() {
-    setStatus("Enviando solicita\xE7\xE3o ao conte\xFAdo...");
+    setStatus("Enviando solicitação ao conteúdo...");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const tab = tabs[0];
       if (!tab || !tab.id) {
@@ -18,11 +18,11 @@
       }
       chrome.tabs.sendMessage(tab.id, { type: "startFromPopup" }, (response) => {
         if (chrome.runtime.lastError) {
-          setStatus("Erro: conte\xFAdo n\xE3o responde nesta p\xE1gina");
+          setStatus("Erro: conteúdo não responde nesta página");
           console.warn("InsignIA popup: sendMessage error", chrome.runtime.lastError.message);
           return;
         }
-        setStatus("An\xE1lise em andamento \u2014 aguarde...");
+        setStatus("Análise em andamento — aguarde...");
       });
     });
   }
@@ -38,11 +38,11 @@
       const payload = message.payload;
       if (payload?.reason) {
         if (summaryNode) {
-          summaryNode.innerHTML = `<strong>${payload.reason.category}</strong> \u2014 ${payload.reason.subcategory} <div style="color:#697386;font-size:12px">Confian\xE7a ${payload.reason.confidence}%</div>`;
+          summaryNode.innerHTML = `<strong>${payload.reason.category}</strong> — ${payload.reason.subcategory} <div style="color:#697386;font-size:12px">Confiança ${payload.reason.confidence}%</div>`;
         }
-        setStatus("An\xE1lise conclu\xEDda");
+        setStatus("Análise concluída");
       } else if (payload?.error) {
-        setStatus("Erro na an\xE1lise: " + payload.error);
+        setStatus("Erro na análise: " + payload.error);
       }
     }
     return true;
