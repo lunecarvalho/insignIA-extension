@@ -339,7 +339,13 @@ button {
   padding: 16px;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 400ms ease, transform 400ms ease;
+  transition: opacity 400ms ease, transform 400ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  border-color: rgba(91, 92, 235, 0.22);
 }
 
 .result-card.ready {
@@ -512,82 +518,24 @@ button {
   color: var(--text-secondary);
 }
 
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .check-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
-  margin-right: 6px;
   color: var(--success);
-}
-
-.trend-layout {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.trend-bars {
-  flex: 1;
-  display: grid;
-  gap: 8px;
-}
-
-.trend-item {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-}
-
-.bar {
-  height: 8px;
-  border-radius: 999px;
-  background: #f1f4fa;
-  overflow: hidden;
-}
-
-.bar i {
-  display: block;
-  height: 100%;
-  width: var(--height);
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
-}
-
-.trend-highlight {
-  width: 110px;
-  padding: 10px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(91, 92, 235, 0.12), rgba(0, 210, 199, 0.12));
-  color: var(--text);
-}
-
-.trend-arrow {
-  font-size: 1rem;
   font-weight: 800;
-  color: var(--secondary);
-  margin-bottom: 6px;
 }
 
-.trend-highlight p {
-  margin: 0;
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  line-height: 1.45;
-}
-
-.insight-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-  color: var(--text);
-  font-size: 0.84rem;
+.check-icon.error {
+  color: var(--danger);
 }
 
 .action-grid {
