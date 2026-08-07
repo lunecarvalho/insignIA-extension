@@ -8,6 +8,7 @@ A plataforma coleta mensagens de conversas em ambiente de navegação, processa 
 
 ## Principais capacidades
 
+
 - Análise automatizada de conversas de atendimento
 - Classificação de intentos e categorias de demanda
 - Inferência de sentimento inicial e final
@@ -42,6 +43,14 @@ A plataforma coleta mensagens de conversas em ambiente de navegação, processa 
 ## Configuração de ambiente
 
 As principais variáveis incluem credenciais e endpoints para Hugging Face, Google Sheets e parâmetros operacionais do backend. A configuração é feita por meio do arquivo backend/.env, com valores locais protegidos e não versionados.
+
+## Refinamentos de fallback
+
+O fluxo de fallback foi refinado para manter a análise útil mesmo quando os modelos externos não estão disponíveis. Entre os ajustes estão:
+
+- priorização de palavras-chave para melhorar a classificação de categorias como impressora, login, financeiro, cancelamento, cardápio e sistema;
+- heurísticas mais alinhadas ao atendimento real, incluindo reconhecimento de resolução, confirmação de resolução, empatia e cordialidade;
+- geração de resumos mais coerentes com a categoria detectada, evitando descrições incompatíveis com o contexto da conversa.
 
 ## Testes
 

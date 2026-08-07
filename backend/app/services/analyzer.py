@@ -76,11 +76,14 @@ class Analyzer:
     def calculate_quality_score(text: str, sentiment_initial: str, sentiment_final: str) -> Tuple[int, Dict[str, bool]]:
         lower = text.lower()
 
-        has_greeting = any(token in lower for token in ["ola", "olá", "bom dia", "boa tarde", "boa noite"])
-        has_complaint = any(token in lower for token in ["reclama", "problema", "erro", "ruim", "nao funciona", "não funciona"])
-        has_empathy = any(token in lower for token in ["sinto muito", "desculpe", "peço desculpas", "peco desculpas", "entendo"]) if has_complaint else False
-        has_solution = any(token in lower for token in ["orient", "solucao", "solução", "passo", "ajuste", "corrigi", "corrigimos"])
-        has_closure = any(token in lower for token in ["resolvido", "encerr", "conclui", "algo mais", "posso ajudar em algo mais"])
+        has_greeting = any(token in lower for token in ["ola", "olá", "bom dia", "boa tarde", "boa noite", "oi"])
+        has_complaint = any(token in lower for token in ["reclama", "problema", "erro", "falha", "bug", "nao funciona", "não funciona", "parou de funcionar", "não imprime", "não está imprimindo", "não está funcionando", "está travado", "mensagem de erro", "demora"])
+        empathy_terms = ["sinto muito", "desculpe", "peço desculpas", "peco desculpas", "entendo", "compreendo", "vou te ajudar", "estou aqui para te auxiliar", "vamos resolver", "vou te auxiliar da melhor forma possível", "estamos à disposição para te ajudar", "estamos a disposicao para te ajudar", "vou te auxiliar"]
+        has_empathy = any(token in lower for token in empathy_terms) if has_complaint else False
+        has_resolution = any(token in lower for token in ["consegui", "funcionou", "deu certo", "resolvido", "resolveu", "solucionado", "corrigido", "está funcionando agora", "agora funciona", "funcionando agora", "obrigado pela ajuda", "agradeço pela ajuda", "agradeco pela ajuda", "obrigado por ajudar", "agradeço por ajudar", "agradeco por ajudar"])
+        has_confirmation = any(token in lower for token in ["obrigado", "agradeço", "agradeco", "gratidão", "grato", "tudo certo", "perfeito", "obrigado pela ajuda", "agradeço pela ajuda", "agradeco pela ajuda", "obrigado por ajudar", "agradeço por ajudar", "agradeco por ajudar"]) or has_resolution
+        has_follow_up = any(token in lower for token in ["algo mais", "posso ajudar em algo mais", "mais alguma coisa", "precisa de mais ajuda", "posso ajudar"])
+        has_cordiality = any(token in lower for token in ["obrigado", "agradeço", "agradeco", "por favor", "tudo bem", "bom", "certo", "gentileza", "posso ajudar", "algo mais"])
         final_positive_or_improved = (
             sentiment_final == "Positivo"
             or Analyzer._sentiment_to_points(sentiment_final) > Analyzer._sentiment_to_points(sentiment_initial)
@@ -89,13 +92,30 @@ class Analyzer:
         checklist = {
             "saudacao": has_greeting,
             "empatia_quando_reclamacao": has_empathy,
-            "orientacao_solucao": has_solution,
-            "confirmacao_encerramento": has_closure,
+            "resolucao": has_resolution,
+            "confirmacao_resolucao": has_confirmation,
+            "pergunta_se_ajuda_em_algo_mais": has_follow_up,
+            "cordialidade": has_cordiality,
             "sentimento_final_positivo_ou_melhora": final_positive_or_improved,
         }
 
-        score = sum(20 for ok in checklist.values() if ok)
-        score = max(0, min(100, score))
+        score = 0
+        if has_greeting:
+            score += 10
+        if has_empathy:
+            score += 15
+        if has_resolution:
+            score += 35
+        if has_confirmation:
+            score += 15
+        if has_follow_up:
+            score += 10
+        if has_cordiality:
+            score += 10
+        if final_positive_or_improved:
+            score += 5
+
+        score = max(0, min(100, round(score)))
         return score, checklist
 
     @staticmethod
@@ -111,40 +131,117 @@ class Analyzer:
     @staticmethod
     def _infer_fallback_category(text: str) -> str:
         lower = text.lower()
-        if any(token in lower for token in ["login", "senha", "acesso", "entrar", "cadastro"]):
-            return "Login"
-        if any(token in lower for token in ["pagamento", "cobran", "boleto", "fatura", "cartao"]):
-            return "Financeiro"
-        if any(token in lower for token in ["impress", "scanner", "papel", "fila"]):
+
+        printer_terms = [
+            "impressora", "impress", "scanner", "papel", "fila", "fila de impressão",
+            "teste da impressora", "parou de imprimir", "não está imprimindo", "nao esta imprimindo",
+            "impressão", "impressao", "teste de impressão", "teste de impressao"
+        ]
+        login_terms = [
+            "login", "senha", "acesso", "entrar", "cadastro", "id e senha", "remote",
+            "acesso remoto", "não consigo acessar", "nao consigo acessar", "não consigo entrar",
+            "nao consigo entrar", "recuperar senha"
+        ]
+        payment_terms = [
+            "pagamento", "cobran", "boleto", "fatura", "cartao", "cartão",
+            "pagamento de boleto", "pagamento de fatura", "pagamento no cartão",
+            "pagamento no cartao", "não consigo realizar meu pagamento", "nao consigo realizar meu pagamento"
+        ]
+        cancellation_terms = [
+            "cancel", "reembolso", "estorno", "quero cancelar", "cancelamento",
+            "encerrar contrato"
+        ]
+        menu_terms = [
+            "cardapio", "cardápio", "pedido", "menu", "produto", "item", "preço",
+            "preco", "cadastrar um item", "alterar o preço", "alterar o preco",
+            "remover produto"
+        ]
+        system_terms = ["erro", "sistema", "bug", "falha", "funcionando"]
+
+        if any(token in lower for token in printer_terms):
             return "Impressora"
-        if any(token in lower for token in ["cancel", "reembolso", "estorno"]):
+        if any(token in lower for token in login_terms) and not any(token in lower for token in printer_terms):
+            return "Login"
+        if any(token in lower for token in payment_terms):
+            return "Financeiro"
+        if any(token in lower for token in cancellation_terms):
             return "Cancelamento"
-        if any(token in lower for token in ["cardapio", "pedido", "menu"]):
+        if any(token in lower for token in menu_terms):
             return "Cardapio"
-        if any(token in lower for token in ["erro", "sistema", "bug", "falha", "funcionando"]):
+        if any(token in lower for token in system_terms):
             return "Sistema"
         return "Outro"
 
     @staticmethod
     def _infer_fallback_sentiment(text: str) -> Tuple[str, float]:
         lower = text.lower()
-        negative_terms = ["problema", "erro", "reclama", "nao", "não", "frustr", "insatisfe", "demora", "falha", "ruim", "não funciona", "nao funciona"]
-        positive_terms = ["consegui", "funcionou", "obrigado", "resolveu", "ok", "perfeito", "bom", "solucionado", "corrigido"]
-        if any(term in lower for term in positive_terms) and not any(term in lower for term in negative_terms):
-            return "Positivo", 0.8
-        if any(term in lower for term in negative_terms):
-            return "Negativo", 0.8
+        negative_terms = [
+            "erro", "falha", "bug", "não funciona", "nao funciona", "parou de funcionar",
+            "não imprime", "não está imprimindo", "não está funcionando", "está travado",
+            "problema", "demora", "mensagem de erro", "reclama", "frustr", "insatisfe"
+        ]
+        positive_terms = [
+            "consegui", "funcionou", "deu certo", "resolvido", "resolveu", "solucionado",
+            "corrigido", "obrigado", "agradeço", "agradeco", "gratidão", "grato",
+            "está funcionando agora", "agora funciona", "funcionando agora", "ok", "perfeito", "bom"
+        ]
+
+        positive_hits = [term for term in positive_terms if term in lower]
+        negative_hits = [term for term in negative_terms if term in lower]
+
+        if positive_hits and not negative_hits:
+            return "Positivo", 0.85
+
+        if negative_hits and not positive_hits:
+            return "Negativo", 0.85
+
+        if positive_hits and negative_hits:
+            if any(term in lower for term in ["obrigado", "agradeço", "agradeco", "gratidão", "grato", "consegui", "funcionou", "deu certo", "resolvido", "resolveu", "solucionado", "corrigido", "está funcionando agora", "agora funciona", "funcionando agora"]):
+                return "Positivo", 0.75
+            return "Negativo", 0.75
+
         return "Neutro", 0.5
 
     @staticmethod
     def _summary_fallback(categoria: str, sentimento_inicial: str, sentimento_final: str, text: str) -> str:
         lower = text.lower()
-        if "login" in lower or "senha" in lower or "acesso" in lower:
+
+        if categoria == "Login":
             return (
-                f"Atendimento de {categoria} com foco em recuperação de acesso e orientacao para login. "
+                f"Atendimento de {categoria} com foco em recuperação de acesso e orientação para login. "
                 f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
             )
-        if "problema" in lower or "erro" in lower:
+        if categoria == "Impressora":
+            return (
+                f"Atendimento de {categoria} com relato de problema de impressão e tentativa de solução. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if categoria == "Financeiro":
+            return (
+                f"Atendimento de {categoria} com foco em cobrança, pagamento ou pendência financeira. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if categoria == "Cancelamento":
+            return (
+                f"Atendimento de {categoria} com solicitação de cancelamento, reembolso ou encerramento. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if categoria == "Cardapio":
+            return (
+                f"Atendimento de {categoria} com solicitação relacionada a item, produto ou alteração de menu. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if categoria == "Sistema":
+            return (
+                f"Atendimento de {categoria} com relato de falha ou problema técnico. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if "login" in lower or "senha" in lower or "acesso" in lower:
+            return (
+                f"Atendimento de {categoria} com foco em recuperação de acesso e orientação para login. "
+                f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
+            )
+        if "problema" in lower or "erro" in lower or "impress" in lower or "fila" in lower:
             return (
                 f"Atendimento de {categoria} com relato de problema e tentativa de solução. "
                 f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}."
@@ -152,7 +249,7 @@ class Analyzer:
         return (
             f"Atendimento classificado como {categoria}. "
             f"Sentimento inicial {sentimento_inicial} e final {sentimento_final}. "
-            "Houve tratativa com foco em orientacao e fechamento."
+            "Houve tratativa com foco em orientação e fechamento."
         )
 
     def analyze(self, payload: AnalyzeRequest) -> AnalyzeResponse:
@@ -168,7 +265,11 @@ class Analyzer:
             initial_label, initial_score = self.hf_client.sentiment(initial_chunk, self.sentiment_model)
         except HFClientError as exc:
             logger.warning(f"Fallback sentimento inicial: {exc}")
-            fallback_text = masked_text if len(initial_chunk.split()) <= 2 else initial_chunk
+            fallback_text = initial_chunk.strip()
+            if len(fallback_text.split()) <= 2 and len(payload.mensagens) > 1:
+                fallback_text = " ".join(msg.strip() for msg in payload.mensagens[:2] if msg and msg.strip())
+            if not fallback_text:
+                fallback_text = masked_text
             initial_label, initial_score = self._infer_fallback_sentiment(fallback_text)
             status_errors.append("fallback_sentimento_inicial")
 
@@ -176,7 +277,11 @@ class Analyzer:
             final_label, final_score = self.hf_client.sentiment(final_chunk, self.sentiment_model)
         except HFClientError as exc:
             logger.warning(f"Fallback sentimento final: {exc}")
-            fallback_text = masked_text if len(final_chunk.split()) <= 2 else final_chunk
+            fallback_text = final_chunk.strip()
+            if len(fallback_text.split()) <= 2 and len(payload.mensagens) > 1:
+                fallback_text = " ".join(msg.strip() for msg in payload.mensagens[-2:] if msg and msg.strip())
+            if not fallback_text:
+                fallback_text = masked_text
             final_label, final_score = self._infer_fallback_sentiment(fallback_text)
             status_errors.append("fallback_sentimento_final")
 
